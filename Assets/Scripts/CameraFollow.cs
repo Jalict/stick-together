@@ -20,7 +20,10 @@ public class CameraFollow : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.LookAt(toFollow);
+        Quaternion targetRotation = Quaternion.LookRotation(toFollow.position - transform.position);
+
+        // Smoothly rotate towards the target point.
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 4f * Time.deltaTime);
 
         // Check if camera is too far away, else start moving it towards
         Vector2 myPosition = new Vector2(transform.position.x, transform.position.z);
@@ -28,7 +31,7 @@ public class CameraFollow : MonoBehaviour {
 
         if(Vector2.Distance(myPosition, followPosition) > maxDistance)
         {
-            Vector3 nextPosition = Vector3.Lerp(transform.position, toFollow.position, 0.9f * Time.deltaTime);
+            Vector3 nextPosition = Vector3.Lerp(transform.position, toFollow.position, 0.3f * Time.deltaTime);
             nextPosition.y = cameraHeight;
 
             transform.position = nextPosition;       

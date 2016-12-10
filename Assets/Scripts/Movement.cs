@@ -4,15 +4,13 @@ using System.Collections;
 public class Movement : MonoBehaviour {
     public Vector3 rotation;
     public Rigidbody body;
-    public Transform camera;
     public float movementAmount;
-    public ForceMode forceMode;
 
 	// Use this for initialization
 	void Start () {
         body = GetComponent<Rigidbody>();
 
-        if (!camera)
+        if (!GetComponent<Camera>())
         {
             Debug.LogError("Player has no direction (Missing Camera Transform)");
         }
@@ -20,10 +18,25 @@ public class Movement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Vector3 movementForce = new Vector3();
-        movementForce.x = Input.GetAxis("Horizontal") * movementAmount;
-        movementForce.z = Input.GetAxis("Vertical") * movementAmount;
-        body.AddForce(movementForce, forceMode);
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        // Player looking direction
+        Vector3 targetDirection = new Vector3(horizontal, 0f, vertical);
+        targetDirection = Camera.main.transform.TransformDirection(targetDirection);
+        targetDirection.y = 0.0f;
+
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
+
+        Quaternion newRotation = Quaternion.Lerp(body.rotation, targetRotation, 15f * Time.deltaTime);
+
+        body.MoveRotation(newRotation);
+
+        Vector3 movement = Vector3.zero;
+        movement += transform.forward * vertical;
+        movement += transform.right * horizontal * 0.5f;
+
+        body.velocity = movement * movementAmount;
 
         // === PICK UP MARKER
         // Get Current postion

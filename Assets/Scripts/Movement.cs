@@ -6,12 +6,17 @@ public class Movement : MonoBehaviour {
     public Rigidbody body;
     public float movementAmount;
     public float itemSearchRadius;
-    public bool searching;
     public GameObject holdingItem;
+    public GameObject marker;
 
 	// Use this for initialization
 	void Start () {
         body = GetComponent<Rigidbody>();
+
+        if(!marker)
+        {
+            Debug.LogError("No marker!");
+        }
     }
 	
 	// Update is called once per frame
@@ -38,12 +43,8 @@ public class Movement : MonoBehaviour {
             body.velocity = movement * movementAmount;
         }
 
-
-        // === PICK UP MARKER
-        // Get Current postion
-        // Find anything near with tag "Pickup"
-        // Find nearest one to player
         Collider[] objs = Physics.OverlapSphere(transform.position, itemSearchRadius);
+        GameObject nearbyPile = null;
 
         if(objs.Length > 0) { 
             float smallestDist = float.MaxValue - 1;
@@ -52,7 +53,13 @@ public class Movement : MonoBehaviour {
 
             for (int i = 0; i < objs.Length; i++)
             {
-                if (!objs[i].CompareTag("Item"))
+                if(objs[i].CompareTag("Pile"))
+                {
+                    nearbyPile = objs[i].gameObject;
+                    continue;
+                }
+
+                if (!objs[i].CompareTag("Item") || holdingItem == objs[i])
                     continue;
 
                 float dist = Vector3.Distance(objs[i].transform.position, transform.position);
@@ -63,23 +70,54 @@ public class Movement : MonoBehaviour {
                 }
             }
 
+            if(foundItem && foundItem != holdingItem)
+            {
+                marker.transform.position = foundItem.transform.position;
+                marker.SetActive(true);
+            }
+            else
+            {
+                marker.SetActive(false);
+            }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                
-                if(holdingItem && holdingItem == foundItem)
+                if (holdingItem && foundItem && holdingItem != foundItem)
                 {
+                    holdingItem.GetComponent<Rigidbody>().isKinematic = false;
                     holdingItem.transform.parent = null;
-                    foundItem.GetComponent<Rigidbody>().isKinematic = false;
+                    holdingItem.GetComponent<Rigidbody>().velocity = (transform.forward * -5f) + (transform.up * 7f);
                     holdingItem = null;
-                } else
+                    holdingItem = foundItem;
+                    foundItem.GetComponent<Rigidbody>().isKinematic = true;
+                    foundItem.transform.parent = transform;
+                    foundItem.transform.position = transform.position + (transform.forward * 2);
+                }
+                else if (holdingItem)
+                {
+                    holdingItem.GetComponent<Rigidbody>().isKinematic = false;
+                    holdingItem.transform.parent = null;
+                    holdingItem.GetComponent<Rigidbody>().velocity = (transform.forward * -5f) + (transform.up * 7f);
+                    holdingItem = null;
+                }
+                
+                else if(!holdingItem && foundItem)
                 {
                     holdingItem = foundItem;
-
-                    foundItem.transform.parent = transform;
                     foundItem.GetComponent<Rigidbody>().isKinematic = true;
+                    foundItem.transform.parent = transform;
                     foundItem.transform.position = transform.position + (transform.forward * 2);
+                }
+                if(holdingItem && nearbyPile)
+                {
+
                 }
             }
         }
+    }
+
+    void OnGizmosDraw()
+    {
+        Gizmos.DrawWireSphere(transform.position, itemSearchRadius);
     }
 }

@@ -31,7 +31,7 @@ public class CameraFollow : MonoBehaviour {
 
         if(Vector2.Distance(myPosition, followPosition) > maxDistance)
         {
-            Vector3 nextPosition = Vector3.Lerp(transform.position, toFollow.position, 0.3f * Time.deltaTime);
+            Vector3 nextPosition = Vector3.Lerp(transform.position, toFollow.position, 0.70f * Time.deltaTime);
             nextPosition.y = cameraHeight;
 
             transform.position = nextPosition;       

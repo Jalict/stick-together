@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Movement : MonoBehaviour {
     public Vector3 rotation;
     public Rigidbody body;
     public float movementAmount;
+    public float itemSearchRadius;
+    public bool searching;
+    public GameObject holdingItem;
 
 	// Use this for initialization
 	void Start () {
@@ -14,6 +18,7 @@ public class Movement : MonoBehaviour {
         {
             Debug.LogError("Player has no direction (Missing Camera Transform)");
         }
+
     }
 	
 	// Update is called once per frame
@@ -38,15 +43,41 @@ public class Movement : MonoBehaviour {
 
         body.velocity = movement * movementAmount;
 
+
         // === PICK UP MARKER
         // Get Current postion
         // Find anything near with tag "Pickup"
         // Find nearest one to player
-        /*GameObject markedObject;
+        Collider[] objs = Physics.OverlapSphere(transform.position, itemSearchRadius);
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            markedObject.transform.parent = transform;
-        }*/
+        if(objs.Length > 0) { 
+            float smallestDist = float.MaxValue - 1;
+            GameObject foundItem = null;
+
+
+            for (int i = 0; i < objs.Length; i++)
+            {
+                if (!objs[i].CompareTag("Item"))
+                    break;
+
+                Debug.Log("asd");
+                float dist = Vector3.Distance(objs[i].transform.position, transform.position);
+                if (dist < smallestDist)
+                {
+                    smallestDist = dist;
+                    foundItem = objs[i].gameObject;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if(holdingItem)
+                {
+                    holdingItem.transform.parent = null;
+                }
+
+                foundItem.transform.parent = transform;
+            }
+        }
     }
 }

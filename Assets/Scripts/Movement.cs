@@ -82,12 +82,13 @@ public class Movement : MonoBehaviour {
             {
                 marker.transform.position = nearestItem.transform.position + (Vector3.up*0.025f);
                 marker.SetActive(true);
-                if(nearestItem.CompareTag("Pile")) {
-                    marker.GetComponent<Marker>().scale = 3f;
-                }
-                else if (nearestItem.CompareTag("Item"))
+
+                if(nearestItem.CompareTag("Pile"))
                 {
-                    marker.GetComponent<Marker>().scale = 1f;
+                    marker.GetComponent<Renderer>().material.color = Color.red;
+                } else
+                {
+                    marker.GetComponent<Renderer>().material.color = Color.white;
                 }
             }
             else
@@ -109,8 +110,16 @@ public class Movement : MonoBehaviour {
 
                     holdingItem = null;
                 }
-                
-                else if(!holdingItem && nearestItem)
+                else if (!holdingItem && nearestItem && nearestItem.CompareTag("Pile"))
+                {
+                    holdingItem = nearestItem.GetComponent<Pile>().RemoveStick();
+                    holdingItem.transform.parent = hand;
+                    holdingItem.transform.position = hand.position;
+                    holdingItem.GetComponent<Rigidbody>().isKinematic = true;
+                    holdingItem.GetComponent<Rigidbody>().detectCollisions = false;
+                    holdingItem.GetComponent<BoxCollider>().enabled = false;
+                }
+                else if(!holdingItem && nearestItem && nearestItem.CompareTag("Item"))
                 {
                     holdingItem = nearestItem;
                     nearestItem.GetComponent<Rigidbody>().isKinematic = true;

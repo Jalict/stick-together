@@ -30,43 +30,34 @@ public class Pile : MonoBehaviour {
 
     private IEnumerator SearchForSticks()
     {
-        bool enoughSticks = false;
-        Collider[] objs = { null };
-
-        while (Time.time - time < SearchTime)
+        while (Time.time - time < SearchTime || sticksInPile.Count > 1)
         {
-            objs = Physics.OverlapSphere(transform.position, radius);
-            int countedNearSticks = 0;
+            Collider[] objs = Physics.OverlapSphere(transform.position, radius);
 
             for (int i = 0; i < objs.Length; i++)
                 if (objs[i].CompareTag("Item"))
-                    countedNearSticks++;
+                {
+                    if(!sticksInPile.Contains(objs[i].gameObject))
+                    {
+                        AddStick(objs[i].gameObject);
+                    }
+                }
 
-            if (countedNearSticks > 1)
+            if (sticksInPile.Count > 1)
             {
-                enoughSticks = true;
-                break;
+                tag = "Pile";
+                countSign.gameObject.SetActive(true);
+            } else
+            {
+                tag = "Untagged";
+                countSign.gameObject.SetActive(false);
             }
 
             yield return new WaitForEndOfFrame();
         }
 
-        if(enoughSticks)
-        {
-            tag = "Pile";
-            countSign.gameObject.SetActive(true);
-
-            for(int i = 0; i < objs.Length;i++)
-            {
-                if(objs[i].CompareTag("Item"))
-                    AddStick(objs[i].gameObject);
-            }
-        }
-        else
-        {
-            Debug.Log("Destroying the searcher");
-            Destroy(gameObject);
-        }
+        Debug.Log("Destroying the pile");
+        Destroy(gameObject);
     }
 
     void Update()
@@ -101,6 +92,16 @@ public class Pile : MonoBehaviour {
         stick.tag = "Untagged";
         Destroy(stick.GetComponent<Rigidbody>());
         Destroy(stick.GetComponent<Collider>());
+    }
+
+    public GameObject RemoveStick()
+    {
+        GameObject stick = sticksInPile[sticksInPile.Count - 1];
+        sticksInPile.Remove(stick);
+        stick.tag = "Item";
+        stick.AddComponent<Rigidbody>();
+        stick.AddComponent<BoxCollider>();
+        return stick;
     }
 
     public void SplitPile()

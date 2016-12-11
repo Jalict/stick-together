@@ -8,6 +8,8 @@ public class Movement : MonoBehaviour {
     public float itemSearchRadius;
     public GameObject holdingItem;
     public GameObject marker;
+    private Animator anim;
+    public Transform hand;
 
 	// Use this for initialization
 	void Start () {
@@ -17,6 +19,8 @@ public class Movement : MonoBehaviour {
         {
             Debug.LogError("No marker!");
         }
+
+        anim = GetComponent<Animator>();
     }
 	
 	// Update is called once per frame
@@ -41,6 +45,11 @@ public class Movement : MonoBehaviour {
             movement += transform.right * horizontal * 0.5f;
 
             body.velocity = movement * movementAmount;
+
+            anim.SetBool("isRunning", true);
+        } else
+        {
+            anim.SetBool("isRunning", false);
         }
 
         Collider[] objs = Physics.OverlapSphere(transform.position, itemSearchRadius);
@@ -90,12 +99,14 @@ public class Movement : MonoBehaviour {
                     holdingItem = null;
                     holdingItem = foundItem;
                     foundItem.GetComponent<Rigidbody>().isKinematic = true;
-                    foundItem.transform.parent = transform;
-                    foundItem.transform.position = transform.position + (transform.forward * 2);
+                    foundItem.transform.parent = hand;
+                    foundItem.transform.position = hand.position;
+                    foundItem.GetComponent<BoxCollider>().enabled = false;
                 }
                 else if (holdingItem)
                 {
                     holdingItem.GetComponent<Rigidbody>().isKinematic = false;
+                    holdingItem.GetComponent<BoxCollider>().enabled = true;
                     holdingItem.transform.parent = null;
                     holdingItem.GetComponent<Rigidbody>().velocity = (transform.forward * -5f) + (transform.up * 7f);
                     holdingItem = null;
@@ -105,8 +116,9 @@ public class Movement : MonoBehaviour {
                 {
                     holdingItem = foundItem;
                     foundItem.GetComponent<Rigidbody>().isKinematic = true;
-                    foundItem.transform.parent = transform;
-                    foundItem.transform.position = transform.position + (transform.forward * 2);
+                    foundItem.transform.parent = hand;
+                    foundItem.transform.position = hand.position;
+                    foundItem.GetComponent<BoxCollider>().enabled = false;
                 }
                 if(holdingItem && nearbyPile)
                 {

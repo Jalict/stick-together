@@ -8,7 +8,7 @@ public class Marker : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	    if(minSize < maxSize)
+	    if(minSize > maxSize)
         {
             Debug.LogError(name + " has bigger minSize than maxSize");
         }

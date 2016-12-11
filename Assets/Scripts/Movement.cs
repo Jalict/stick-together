@@ -10,6 +10,7 @@ public class Movement : MonoBehaviour {
     public GameObject marker;
     private Animator anim;
     public Transform hand;
+    public GameObject pile;
 
 	// Use this for initialization
 	void Start () {
@@ -79,8 +80,15 @@ public class Movement : MonoBehaviour {
 
             if((nearestItem && nearestItem != holdingItem))
             {
-                marker.transform.position = nearestItem.transform.position;
+                marker.transform.position = nearestItem.transform.position + (Vector3.up*0.025f);
                 marker.SetActive(true);
+                if(nearestItem.CompareTag("Pile")) {
+                    marker.GetComponent<Marker>().scale = 3f;
+                }
+                else if (nearestItem.CompareTag("Item"))
+                {
+                    marker.GetComponent<Marker>().scale = 1f;
+                }
             }
             else
             {
@@ -89,27 +97,16 @@ public class Movement : MonoBehaviour {
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (holdingItem && nearestItem && nearestItem.GetComponent<Pile>())
+                if (holdingItem)
                 {
-                    Pile p = nearestItem.GetComponent<Pile>();
-                    p.AddStick(holdingItem);
                     holdingItem.GetComponent<Rigidbody>().isKinematic = false;
                     holdingItem.GetComponent<Rigidbody>().detectCollisions = true;
                     holdingItem.GetComponent<BoxCollider>().enabled = true;
                     holdingItem.transform.parent = null;
-                    holdingItem.transform.position = nearestItem.transform.position + (Vector3.up * 2);
-                    holdingItem.GetComponent<Rigidbody>().velocity = holdingItem.transform.up * -1;
+                    holdingItem.GetComponent<Rigidbody>().velocity = (transform.forward * 7f) + (transform.up * 2f);
 
-                }
-                else if (holdingItem)
-                {
-                    holdingItem.GetComponent<Rigidbody>().isKinematic = false;
-                    holdingItem.GetComponent<Rigidbody>().detectCollisions = true;
-                    holdingItem.GetComponent<BoxCollider>().enabled = true;
-                    holdingItem.transform.parent = null;
-                    holdingItem.GetComponent<Rigidbody>().velocity = (transform.forward * -5f) + (transform.up * 7f);
-                    if(!holdingItem.GetComponent<Pile>())
-                        holdingItem.AddComponent<Pile>();
+                    StartCoroutine(CreatePile(holdingItem));
+
                     holdingItem = null;
                 }
                 
@@ -124,6 +121,13 @@ public class Movement : MonoBehaviour {
                 }
             }
         }
+    }
+
+    private IEnumerator CreatePile(GameObject item)
+    {
+        yield return new WaitForSeconds(2f);
+
+        Instantiate(pile, item.transform.position, Quaternion.identity);
     }
 
     void OnDrawGizmos()

@@ -160,9 +160,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de5008470efd4544bdc1d4f9779425f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  index: 0
   sticksInPile: []
   countSign: {fileID: 114000014142471722}
-  searchRadiusMultiplier: 2
+  searchRadiusMultiplier: 0.75
   radius: 0
   SearchTime: 60
 --- !u!114 &114000013587599948

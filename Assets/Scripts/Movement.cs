@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour {
     private Animator anim;
     public Transform hand;
     public GameObject pile;
+    public AudioClip pickupSound;
 
 	// Use this for initialization
 	void Start () {
@@ -112,6 +113,8 @@ public class Movement : MonoBehaviour {
                 }
                 else if (!holdingItem && nearestItem && nearestItem.CompareTag("Pile"))
                 {
+                    AudioSource.PlayClipAtPoint(pickupSound, nearestItem.transform.position);
+
                     holdingItem = nearestItem.GetComponent<Pile>().RemoveStick();
                     holdingItem.transform.parent = hand;
                     holdingItem.transform.position = hand.position;
@@ -121,6 +124,8 @@ public class Movement : MonoBehaviour {
                 }
                 else if(!holdingItem && nearestItem && nearestItem.CompareTag("Item"))
                 {
+                    AudioSource.PlayClipAtPoint(pickupSound, nearestItem.transform.position);
+
                     holdingItem = nearestItem;
                     nearestItem.GetComponent<Rigidbody>().isKinematic = true;
                     nearestItem.GetComponent<Rigidbody>().detectCollisions = false;

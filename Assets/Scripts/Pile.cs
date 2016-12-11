@@ -79,7 +79,6 @@ public class Pile : MonoBehaviour {
                 continue;
 
             if (objs[i].GetComponent<Pile>() && objs[i].CompareTag("Untagged")) {
-                Debug.Log("Destroying " + objs[i].name);
                 Destroy(objs[i].gameObject);
             }
         }

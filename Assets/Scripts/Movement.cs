@@ -13,6 +13,8 @@ public class Movement : MonoBehaviour {
     public GameObject pile;
     public AudioClip pickupSound;
 
+    private Quaternion cachedRotation;
+
 	// Use this for initialization
 	void Start () {
         body = GetComponent<Rigidbody>();
@@ -30,21 +32,14 @@ public class Movement : MonoBehaviour {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        if(horizontal != 0 || vertical != 0) { 
-            // Player looking direction
-            Vector3 targetDirection = new Vector3(horizontal, 0f, vertical);
-            targetDirection = Camera.main.transform.TransformDirection(targetDirection);
-            targetDirection.y = 0.0f;
-
-            Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
-
-            Quaternion newRotation = Quaternion.Lerp(body.rotation, targetRotation, 15f * Time.deltaTime);
-
-            body.MoveRotation(newRotation);
+        if(horizontal != 0)
+        {
+            transform.RotateAround(Vector3.up, horizontal / 12f);
+        }
+        if(vertical != 0) {
 
             Vector3 movement = Vector3.zero;
             movement += transform.forward * vertical;
-            movement += transform.right * horizontal * 0.5f;
 
             body.velocity = movement * movementAmount;
 

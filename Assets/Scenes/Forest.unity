@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1276231303}
-  m_IndirectSpecularColor: {r: 0.44086912, g: 0.48953605, b: 0.56959134, a: 1}
+  m_IndirectSpecularColor: {r: 0.44065428, g: 0.48930424, b: 0.56943876, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -50,8 +50,8 @@ LightmapSettings:
     m_AlbedoBoost: 1
     m_TemporalCoherenceThreshold: 1
     m_EnvironmentLightingMode: 0
-    m_EnableBakedLightmaps: 1
-    m_EnableRealtimeLightmaps: 0
+    m_EnableBakedLightmaps: 0
+    m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
     serializedVersion: 4
     m_Resolution: 1
@@ -72,7 +72,7 @@ LightmapSettings:
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
-  m_LightingDataAsset: {fileID: 112000001, guid: a301d0b84ac958949a13528cdfbe9457,
+  m_LightingDataAsset: {fileID: 112000097, guid: a301d0b84ac958949a13528cdfbe9457,
     type: 2}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
@@ -3604,10 +3604,10 @@ Light:
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.399
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -3618,7 +3618,7 @@ Light:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_Lightmapping: 2
+  m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
   m_ShadowRadius: 0
@@ -3629,13 +3629,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1276231302}
-  m_LocalRotation: {x: 0.6261744, y: -0.2615838, z: 0.0012285764, w: 0.7344917}
+  m_LocalRotation: {x: 0.6885815, y: -0.11636404, z: 0.113376625, w: 0.70672536}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 66.976006, y: -78.623, z: -56.320004}
+  m_LocalEulerAnglesHint: {x: 88.51, y: -18.7, z: 0}
 --- !u!1 &1408241251
 GameObject:
   m_ObjectHideFlags: 0

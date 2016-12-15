@@ -9,11 +9,9 @@ public class Movement : MonoBehaviour {
     public GameObject holdingItem;
     public GameObject marker;
     private Animator anim;
-    public Transform hand;
-    public GameObject pile;
+    public Transform holdingHand;
+    public GameObject pilePrefab;
     public AudioClip pickupSound;
-
-    private Quaternion cachedRotation;
 
 	// Use this for initialization
 	void Start () {
@@ -36,7 +34,10 @@ public class Movement : MonoBehaviour {
         {
             transform.RotateAround(Vector3.up, horizontal / 12f);
         }
+
         if(vertical != 0) {
+            if(vertical < 0)
+                vertical *= 0.5f;
 
             Vector3 movement = Vector3.zero;
             movement += transform.forward * vertical;
@@ -44,6 +45,7 @@ public class Movement : MonoBehaviour {
             body.velocity = movement * movementAmount;
 
             anim.SetBool("isRunning", true);
+            anim.SetFloat("runningSpeed", vertical);
         } else
         {
             anim.SetBool("isRunning", false);
@@ -100,7 +102,7 @@ public class Movement : MonoBehaviour {
                     holdingItem.GetComponent<Rigidbody>().detectCollisions = true;
                     holdingItem.GetComponent<BoxCollider>().enabled = true;
                     holdingItem.transform.parent = null;
-                    holdingItem.GetComponent<Rigidbody>().velocity = (transform.forward * 7f) + (transform.up * 2f);
+                    holdingItem.GetComponent<Rigidbody>().velocity = (transform.forward * 7f) + (transform.up * 2f) + body.velocity;
 
                     StartCoroutine(CreatePile(holdingItem));
 
@@ -111,8 +113,8 @@ public class Movement : MonoBehaviour {
                     AudioSource.PlayClipAtPoint(pickupSound, nearestItem.transform.position);
 
                     holdingItem = nearestItem.GetComponent<Pile>().RemoveStick();
-                    holdingItem.transform.parent = hand;
-                    holdingItem.transform.position = hand.position;
+                    holdingItem.transform.parent = holdingHand;
+                    holdingItem.transform.position = holdingHand.position;
                     holdingItem.GetComponent<Rigidbody>().isKinematic = true;
                     holdingItem.GetComponent<Rigidbody>().detectCollisions = false;
                     holdingItem.GetComponent<BoxCollider>().enabled = false;
@@ -124,8 +126,8 @@ public class Movement : MonoBehaviour {
                     holdingItem = nearestItem;
                     nearestItem.GetComponent<Rigidbody>().isKinematic = true;
                     nearestItem.GetComponent<Rigidbody>().detectCollisions = false;
-                    nearestItem.transform.parent = hand;
-                    nearestItem.transform.position = hand.position;
+                    nearestItem.transform.parent = holdingHand;
+                    nearestItem.transform.position = holdingHand.position;
                     nearestItem.GetComponent<BoxCollider>().enabled = false;
                 }
             }
@@ -136,7 +138,7 @@ public class Movement : MonoBehaviour {
     {
         yield return new WaitForSeconds(2f);
 
-        Instantiate(pile, item.transform.position, Quaternion.identity);
+        Instantiate(pilePrefab, item.transform.position, Quaternion.identity);
     }
 
     void OnDrawGizmos()
